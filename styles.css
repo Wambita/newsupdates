@@ -85,7 +85,6 @@ body{
     list-style-type: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
 }
@@ -134,7 +133,7 @@ body{
   /*comments styling*/
   .comments-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(auto, 1fr));
     gap: 1rem;
     margin-top: 1rem;
   }
@@ -158,3 +157,21 @@ body{
     margin-bottom: 0.5rem;
     font-style: italic;
   }
+  .load-comments {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+    margin-top: 1rem;
+    width: 200px;
+  }
+
+  .load-comments:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+  }
+

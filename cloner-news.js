@@ -54,7 +54,7 @@ function displayPost(post){
     listItem.className = 'post' //classname for styling
     listItem.innerHTML = `
     <div>
-    <a href="${post.url}" class="post-title" target="_blank"${post.title}/a>
+ <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
     <p class="post-meta"> By ${post.by} | ${post.score} points | ${new Date(post.time * 1000).toLocaleString()}</p>
     </div>
     <button class="load-comments" data-id="${post.id}">Load Comments</button>
