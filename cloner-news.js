@@ -106,7 +106,16 @@ function displayPost(post){
     container.appendChild(commentElement); // Append the comment to the container
   }
 
-  
+  //fetch live updates
+  async function fetchUpdates() {
+    try {
+      const response = await fetch('https://hacker-news.firebaseio.com/v0/updates.json'); // Fetch updates
+      const updates = await response.json(); // Parse JSON data
+      displayUpdates(updates); // Display the updates
+    } catch (error) {
+      console.error('Error fetching updates:', error); // Log errors if any
+    }
+  }
 
 //display updates
 function displayUpdates() {
