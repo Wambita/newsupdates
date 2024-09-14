@@ -48,6 +48,53 @@ async function loadMorePosts() {
     }
 }
 
+//display posts
+function displayPost(post){
+    const listItem = document.createElement('li') //create a list item for the post
+    listItem.className = 'post' //classname for styling
+    listItem.innerHTML = `
+    <div>
+    <a href="${post.url}" class="post-title" target="_blank"${post.title}/a>
+    <p class="post-meta"> By ${post.by} | ${post.score} points | ${new Date(post.time * 1000).toLocaleString()}</p>
+    </div>
+    <button class="load-comments" data-id="${post.id}">Load Comments</button>
+   <div class="comments-grid" id="comments-${post.id}"></div>
+    `
+    postsContainer.appendChild(listItem) //append post to the posts container
+    //add event listener to load comments button
+    const loadCommentsButton = listItem.querySelector('.load-comments')
+    loadCommentsButton.addEventListener('click', () => loadComments(post.id))
+} 
+
+ // Function to load comments for a specific post
+ async function loadComments(postId) {
+    const commentsContainer = document.getElementById(`comments-${postId}`); // Get the container for comments
+    commentsContainer.innerHTML = 'Loading comments...'; // Show loading text
+
+    try {
+      // Fetch the post to get the comment IDs
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
+      const post = await response.json(); // Parse JSON data
+      const commentIds = post.kids || []; // Get the comment IDs
+
+      commentsContainer.innerHTML = ''; // Clear the comments container
+
+      // Fetch and display each comment (up to 6)
+      for (const commentId of commentIds.slice(0, 6)) {
+        try {
+          const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
+          const comment = await commentResponse.json(); // Parse JSON data
+          displayComment(comment, commentsContainer); // Display the comment
+        } catch (error) {
+          console.error('Error fetching comment:', error); // Log errors if any
+        }
+      }
+    } catch (error) {
+      console.error('Error loading comments:', error); // Log errors if any
+      commentsContainer.innerHTML = 'Error loading comments. Please try again.'; // Show error message
+    }
+  }
+
 //display updates
 function displayUpdates() {
     updatesContent.innerHTML = `
