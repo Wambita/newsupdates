@@ -1,4 +1,3 @@
-```md
 # ClonerNews
 
 ClonerNews is a web application that replicates key features of Hacker News. It allows users to browse news stories, view comments, and receive live updates from the Hacker News API.
