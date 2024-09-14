@@ -123,3 +123,19 @@ function displayUpdates() {
     <p>New Items: ${updates.items.length}</p>
     <p>Updated profiles: ${updates.profiles.length}</p> `
 }
+
+// Event listener for live updates button
+liveUpdates.addEventListener('click', async () => {
+    const updates = await fetchUpdates(); // Fetch updates
+    if (updates && updates.items.length > 0) {
+      const latestItemId = updates.items[0]; // Get the latest item ID
+      try {
+        const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${latestItemId}.json`);
+        const latestItem = await response.json(); // Parse JSON data
+        displayPost(latestItem); // Display the latest post
+        window.scrollTo(0, 0); // Scroll to the top of the page
+      } catch (error) {
+        console.error('Error fetching latest item:', error); // Log errors if any
+      }
+    }
+  });
