@@ -139,3 +139,20 @@ liveUpdates.addEventListener('click', async () => {
       }
     }
   });
+
+  // Event listener for load more button
+  loadMoreButton.addEventListener('click', loadMorePosts);
+
+  // Fetch initial stories and start the interval for updates
+  fetchStories(currentStoryType);
+  setInterval(fetchUpdates, 5000); // Fetch updates every 5 seconds
+
+  // Implement infinite scroll
+  window.addEventListener('scroll', () => {
+    // Check if the user has scrolled near the bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      if (currentPage * postsPerPage < allStories.length) {
+        loadMorePosts(); // Load more posts if available
+      }
+    }
+  });
