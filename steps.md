@@ -14,10 +14,16 @@
   - Style individual `news-card` elements with padding, borders, and links for article display.
 
 - **JavaScript for Functionality** (`scripts.js`):
-  - Select input, button, and news container elements via `getElementById`.
+  - Fetch the api containing the data
+  - Render the news on the html page
+  - Select  button and news container elements via `getElementById`.
   - Add a click event listener capture clicks on certain elements to load comments and items.
   - Dynamically inject fetched articles into `newsContainer` by creating `div` elements.
   - Display article title, author, and points in each card, linking the title to the article's URL.
+  - Promises: Manage async operations with .then() and .catch().
+  - Async/Await: Simplify async code with async functions and await.
+  - Throttle: Control function execution rate to prevent overload.
+  - Debounce: Delay function execution until user stops interacting.
 
 - **Connecting Files**:
   - In `index.html`, link `styles.css` for styling.
