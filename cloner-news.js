@@ -10,7 +10,7 @@ let allStories = [] // array to store all fetched stories
 let currentStoryType = 'topstories' // current story type (topstories, updates, live-updates)
 
 // fetch and display top stories
-async function fetchStories() {
+async function fetchStories(storyType) {
     try{
         //fetch top stories
         const response = await fetch(`https://hacker-news.firebaseio.com/v0/${storyType}.json`)
@@ -106,6 +106,7 @@ function displayPost(post){
     container.appendChild(commentElement); // Append the comment to the container
   }
 
+
   //fetch live updates
   async function fetchUpdates() {
     try {
@@ -117,12 +118,13 @@ function displayPost(post){
     }
   }
 
-//display updates
-function displayUpdates() {
+  //display updates
+  function displayUpdates(updates) {
     updatesContent.innerHTML = `
     <p>New Items: ${updates.items.length}</p>
     <p>Updated profiles: ${updates.profiles.length}</p> `
 }
+
 
 // Event listener for live updates button
 liveUpdates.addEventListener('click', async () => {
