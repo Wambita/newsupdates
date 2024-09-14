@@ -5,7 +5,7 @@
         --text-color: #333;
         --secondary-color: #828282;
         --card-background: #fff;
-        --accent-color: #ff6600;
+        --accent-color: #7a067386;
 }
 
 /*Body styling*/
@@ -17,6 +17,40 @@ body{
     margin: 0;
     padding: 0;
 }
+
+/*Navbar*/
+nav#post-type-nav {
+    background-color: var(--primary-color);
+    padding: 0.5rem 0;
+  }
+
+  nav#post-type-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  nav#post-type-nav li {
+    margin: 0 0.5rem;
+  }
+
+  nav#post-type-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  nav#post-type-nav a:hover,
+  nav#post-type-nav a.active {
+    background-color: var(--accent-color);
+  }
+
+
 
 /*Main container styling*/
 .container {
