@@ -66,7 +66,7 @@ function displayPost(post){
     loadCommentsButton.addEventListener('click', () => loadComments(post.id))
 } 
 
- // Function to load comments for a specific post
+ // load comments for a specific post
  async function loadComments(postId) {
     const commentsContainer = document.getElementById(`comments-${postId}`); // Get the container for comments
     commentsContainer.innerHTML = 'Loading comments...'; // Show loading text
@@ -94,6 +94,19 @@ function displayPost(post){
       commentsContainer.innerHTML = 'Error loading comments. Please try again.'; // Show error message
     }
   }
+
+  // display a comment
+  function displayComment(comment, container) {
+    const commentElement = document.createElement('div'); // Create a new div for the comment
+    commentElement.className = 'comment'; // Assign a class name for styling
+    commentElement.innerHTML = `
+      <div class="comment-meta">By ${comment.by} | ${new Date(comment.time * 1000).toLocaleString()}</div>
+      <div>${comment.text}</div>
+    `;
+    container.appendChild(commentElement); // Append the comment to the container
+  }
+
+  
 
 //display updates
 function displayUpdates() {
