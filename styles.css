@@ -1,254 +1,259 @@
 /*Colors*/
-:root{
-        --primary-color: #001f3f;
-        --background-color: #f6f6ef;
-        --text-color: #333;
-        --secondary-color: #828282;
-        --card-background: #fff;
-        --accent-color: #7a067386;
+:root {
+  --primary-color: #001f3f;
+  --background-color: #f6f6ef;
+  --text-color: #333;
+  --secondary-color: #828282;
+  --card-background: #fff;
+  --accent-color: #7a067386;
 }
 
 /*Body styling*/
-body{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 0;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
 }
 
 /*Navbar*/
 nav#post-type-nav {
-    background-color: var(--primary-color);
-    padding: 0.5rem 0;
-  }
+  background-color: var(--primary-color);
+  padding: 0.5rem 0;
+}
 
-  nav#post-type-nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+nav#post-type-nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
-  nav#post-type-nav li {
-    margin: 0 0.5rem;
-  }
+nav#post-type-nav li {
+  margin: 0 0.5rem;
+}
 
-  nav#post-type-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: background-color 0.2s ease-in-out;
-  }
+nav#post-type-nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
 
-  nav#post-type-nav a:hover,
-  nav#post-type-nav a.active {
-    background-color: var(--accent-color);
-  }
-
-
+nav#post-type-nav a:hover,
+nav#post-type-nav a.active {
+  background-color: var(--accent-color);
+}
 
 /*Main container styling*/
 .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
 /*Header styling*/
-  header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-  h1 {
-    margin: 0;
-    font-size: 2.8rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+h1 {
+  margin: 0;
+  font-size: 2.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
 /*Live updates section*/
 #live-updates {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    margin-top: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
+  background-color: var(--card-background);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
 
-  #live-updates:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
+#live-updates:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
 
-  #live-updates h3 {
-    color: var(--primary-color);
-    margin-top: 0;
-    font-size: 1.5rem;
-    border-bottom: 2px solid var(--accent-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-  }
+#live-updates h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 /*Posts*/
 .post {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: all 0.3s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  background-color: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .post:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-#posts {
-    list-style-type: none;
-    padding: 0;
-    display: grid;
-    gap: 1.5rem;
-    margin-top: 2rem;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
-  .post-title {
-    font-weight: bold;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 1.3rem;
-    display: block;
-    margin-bottom: 0.8rem;
-    transition: color 0.2s ease-in-out;
-  }
 
-  .post-title:hover {
-    color: var(--accent-color);
-  }
+#posts {
+  list-style-type: none;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
 
-  .post-meta {
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-  }
+.post-title {
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.8rem;
+  transition: color 0.2s ease-in-out;
+}
 
-  /*load more button*/
-  #load-more {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    transition: all 0.2s ease-in-out;
-    display: block;
-    margin: 2rem auto;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+.post-title:hover {
+  color: var(--accent-color);
+}
 
-  #load-more:hover {
-    background-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
+.post-meta {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  margin-bottom: 1rem;
+}
 
-  /*comments styling*/
-  .comments-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(auto, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
+/*Load more button*/
+#load-more {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  transition: all 0.2s ease-in-out;
+  display: block;
+  margin: 2rem auto;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-  .comment {
-    background-color: #f0f0f0;
-    padding: 1rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    transition: all 0.2s ease-in-out;
-  }
+#load-more:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
 
-  .comment:hover {
-    background-color: #e6e6e6;
-    transform: translateY(-2px);
-  }
+/*Comments styling*/
+.comments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(auto, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
 
-  .comment-meta {
-    font-size: 0.8rem;
-    color: var(--secondary-color);
-    margin-bottom: 0.5rem;
-    font-style: italic;
-  }
-  .load-comments {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    transition: all 0.2s ease-in-out;
-    margin-top: 1rem;
-    width: 200px;
-  }
+.comment {
+  background-color: #f0f0f0;
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+}
 
-  .load-comments:hover {
-    background-color: var(--primary-color);
-    transform: translateY(-2px);
-  }
+.comment:hover {
+  background-color: #e6e6e6;
+  transform: translateY(-2px);
+}
 
-  /* Style read more */
-  .read-more {
-    color: blue;
-    text-decoration: none; /* Optional: removes underline */
-  }
-  
-  .read-more:hover {
-    text-decoration: underline; /* Optional: adds underline on hover */
-  }
-  
-  /* Popup styling */
+.comment-meta {
+  font-size: 0.8rem;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.load-comments {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  margin-top: 1rem;
+  width: 200px;
+}
+
+.load-comments:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Style read more */
+.read-more {
+  color: blue;
+  text-decoration: none; /* Optional: removes underline */
+}
+
+.read-more:hover {
+  text-decoration: underline; /* Optional: adds underline on hover */
+}
+
+/* Popup styling */
 .popUp {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.1rem;
+  z-index: 1000; /* Ensure it is on top of other content */
+  opacity: 1; /* Fully opaque initially */
+  transition: opacity 1s ease-out; /* Transition for fading out */
   display: none; /* Initially hidden */
 }
 
+/* Container for the popup message and button */
 .popUpContainer {
   background-color: var(--card-background);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
-  text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
+  display: inline-block; /* Adjust to fit content */
 }
 
+/* Message inside the popup */
 #popUpMessage {
   color: var(--text-color);
   font-size: 1.1rem;
 }
 
+/* Close button styling */
 #closePopupBtn {
   background-color: var(--primary-color);
   color: white;
@@ -263,4 +268,9 @@ nav#post-type-nav {
 
 #closePopupBtn:hover {
   background-color: var(--accent-color);
+}
+
+/* Class to handle the fading out effect */
+.popUp.fade-out {
+  opacity: 0; /* Fade to fully transparent */
 }
