@@ -57,22 +57,37 @@
     }
   }
 
+  function formatDate(timestamp) {
+    // Converts the Unix timestamp to a readable date string
+    return new Date(timestamp * 1000).toLocaleString();
+  }
+  
   function displayPost(post) {
+    // Determine whether to use "point" or "points"
+    const pointsLabel = post.score === 1 ? 'point' : 'points';
+  
     const listItem = document.createElement('li');
     listItem.className = 'post';
+  
     listItem.innerHTML = `
-      <div>
-        <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
-        <p class="post-meta">By ${post.by} | ${post.score} points | ${new Date(post.time * 1000).toLocaleString()}</p>
+      <div class="post-content">
+        <h2>${post.title}</h2>
+        <p class="post-info">By: ${post.by} | Score: ${post.score} ${pointsLabel} | Posted: ${formatDate(post.time)}</p>
+        ${post.url ? `<a href="${post.url}" target="_blank">Read more</a>` : ''}
+        <button class="load-comments" data-id="${post.id}">Load Comments</button>
+        <div class="comments-grid" id="comments-${post.id}" style="display: none;"></div>
       </div>
-      <button class="load-comments" data-id="${post.id}">Load Comments</button>
-      <div class="comments-grid" id="comments-${post.id}"></div>
     `;
+  
     postsContainer.appendChild(listItem);
-
+  
+    // Add event listener for the comments button
     const loadCommentsButton = listItem.querySelector('.load-comments');
     loadCommentsButton.addEventListener('click', () => loadComments(post.id));
   }
+  
+  
+  
 
   async function loadComments(postId) {
     const commentsContainer = document.getElementById(`comments-${postId}`);
