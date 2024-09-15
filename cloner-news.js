@@ -16,7 +16,6 @@ async function fetchStories(storyType) {
     allStories = data;
     currentPage = 0;
     postsContainer.innerHTML = '';
-    loadMoreButton.style.display = 'block';
     loadMorePosts();
     updateActiveNavItem(storyType);
   } catch (error) {
