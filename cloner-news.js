@@ -86,7 +86,13 @@ async function loadComments(postId) {
     const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
     const post = await response.json();
     const commentIds = post.kids || [];
-    commentsContainer.innerHTML = '';
+    
+    if (commentIds.length === 0) {
+      commentsContainer.innerHTML = 'No comments';
+      return;
+    }
+    
+    commentsContainer.innerHTML = '';  // Clear 'Loading comments...' text
     for (const commentId of commentIds.slice(0, 6)) {
       try {
         const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
@@ -101,6 +107,7 @@ async function loadComments(postId) {
     commentsContainer.innerHTML = 'Error loading comments. Please try again.';
   }
 }
+
 
 // Function to display a single comment
 function displayComment(comment, container) {
