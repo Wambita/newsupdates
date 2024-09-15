@@ -1,4 +1,3 @@
-
 const postsContainer = document.getElementById('posts');
 const loadMoreButton = document.getElementById('load-more');
 const updatesContent = document.getElementById('updates-content');
@@ -9,19 +8,23 @@ const ITEMS_PER_PAGE = 10;
 let currentPage = 0;
 let allStories = [];
 let currentStoryType = 'topstories';
+
+// Function to fetch and display initial stories
 async function fetchStories(storyType) {
   try {
     const response = await fetch(`https://hacker-news.firebaseio.com/v0/${storyType}.json`);
     const data = await response.json();
     allStories = data;
-    currentPage = 0;
+    currentPage = 0;  // Reset page number
     postsContainer.innerHTML = '';
-    loadMorePosts();
+    loadMorePosts();  // Load the first batch of posts
     updateActiveNavItem(storyType);
   } catch (error) {
     console.error('Error fetching stories:', error);
   }
 }
+
+// Function to update the active navigation item
 function updateActiveNavItem(type) {
   const navItems = postTypeNav.querySelectorAll('a');
   navItems.forEach(item => {
@@ -32,10 +35,13 @@ function updateActiveNavItem(type) {
     }
   });
 }
+
+// Function to load more posts in chunks
 async function loadMorePosts() {
-  const start = currentPage * postsPerPage;
-  const end = start + postsPerPage;
+  const start = currentPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
   const pageStories = allStories.slice(start, end);
+
   for (const storyId of pageStories) {
     try {
       const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`);
@@ -45,17 +51,18 @@ async function loadMorePosts() {
       console.error('Error fetching story:', error);
     }
   }
+
   currentPage++;
-  if (currentPage * postsPerPage >= allStories.length) {
-    loadMoreButton.style.display = 'none';
+  
+  if (currentPage * ITEMS_PER_PAGE >= allStories.length) {
+    loadMoreButton.style.display = 'none';  // Hide the button if no more posts
   }
 }
 
+// Function to display a single post
 function displayPost(post) {
   const listItem = document.createElement('li');
   listItem.className = 'post';
-
-  // Construct the HTML for the post
   listItem.innerHTML = `
     <div>
       <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
@@ -65,15 +72,13 @@ function displayPost(post) {
     <button class="load-comments" data-id="${post.id}">Load Comments</button>
     <div class="comments-grid" id="comments-${post.id}"></div>
   `;
-
-  // Append the newly created post to the posts container
   postsContainer.appendChild(listItem);
 
-  // Add event listener to the "Load Comments" button
   const loadCommentsButton = listItem.querySelector('.load-comments');
   loadCommentsButton.addEventListener('click', () => loadComments(post.id));
 }
 
+// Function to load comments for a post
 async function loadComments(postId) {
   const commentsContainer = document.getElementById(`comments-${postId}`);
   commentsContainer.innerHTML = 'Loading comments...';
@@ -96,6 +101,8 @@ async function loadComments(postId) {
     commentsContainer.innerHTML = 'Error loading comments. Please try again.';
   }
 }
+
+// Function to display a single comment
 function displayComment(comment, container) {
   const commentElement = document.createElement('div');
   commentElement.className = 'comment';
@@ -105,6 +112,8 @@ function displayComment(comment, container) {
   `;
   container.appendChild(commentElement);
 }
+
+// Function to fetch and display updates
 async function fetchUpdates() {
   try {
     const response = await fetch('https://hacker-news.firebaseio.com/v0/updates.json');
@@ -114,6 +123,8 @@ async function fetchUpdates() {
     console.error('Error fetching updates:', error);
   }
 }
+
+// Function to display updates
 function displayUpdates(updates) {
   updatesContent.innerHTML = `
     <p>New Items: <a href="#" class="new-items-link" data-items="${updates.items.join(',')}">${updates.items.length}</a></p>
@@ -126,6 +137,8 @@ function displayUpdates(updates) {
     displayNewItems(newItemIds);
   });
 }
+
+// Function to display new items
 async function displayNewItems(itemIds) {
   postsContainer.innerHTML = '';
   for (const itemId of itemIds) {
@@ -141,6 +154,8 @@ async function displayNewItems(itemIds) {
   }
   window.scrollTo(0, 0);
 }
+
+// Event listeners
 liveUpdates.addEventListener('click', fetchUpdates);
 postTypeNav.addEventListener('click', (e) => {
   e.preventDefault();
@@ -151,9 +166,14 @@ postTypeNav.addEventListener('click', (e) => {
   }
 });
 loadMoreButton.addEventListener('click', loadMorePosts);
+
+// Fetch initial stories
 fetchStories(currentStoryType);
+
+// Set interval for updates
 setInterval(fetchUpdates, 5000);
 
+// Debounced scroll event listener
 let debounceTimeout;
 function onScroll() {
   clearTimeout(debounceTimeout);
@@ -166,3 +186,4 @@ function onScroll() {
   }, 100);
 }
 window.addEventListener('scroll', onScroll);
+
