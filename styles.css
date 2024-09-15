@@ -209,3 +209,14 @@ nav#post-type-nav {
     transform: translateY(-2px);
   }
 
+  /* Style read more */
+  .read-more {
+    color: blue;
+    text-decoration: none; /* Optional: removes underline */
+  }
+  
+  .read-more:hover {
+    text-decoration: underline; /* Optional: adds underline on hover */
+  }
+  
+  
