@@ -55,18 +55,26 @@ async function loadMorePosts() {
 function displayPost(post) {
   const listItem = document.createElement('li');
   listItem.className = 'post';
+
+  // Construct the HTML for the post
   listItem.innerHTML = `
     <div>
       <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
       <p class="post-meta">By: ${post.by} | Score: ${post.score} points | Posted: ${new Date(post.time * 1000).toLocaleString()}</p>
+      ${post.url ? `<a href="${post.url}" target="_blank" class="read-more">Read more</a>` : ''}
     </div>
     <button class="load-comments" data-id="${post.id}">Load Comments</button>
     <div class="comments-grid" id="comments-${post.id}"></div>
   `;
+
+  // Append the newly created post to the posts container
   postsContainer.appendChild(listItem);
+
+  // Add event listener to the "Load Comments" button
   const loadCommentsButton = listItem.querySelector('.load-comments');
   loadCommentsButton.addEventListener('click', () => loadComments(post.id));
 }
+
 async function loadComments(postId) {
   const commentsContainer = document.getElementById(`comments-${postId}`);
   commentsContainer.innerHTML = 'Loading comments...';
