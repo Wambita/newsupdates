@@ -14,15 +14,31 @@ let newestStories = [];
 
 // Function to show popup
 function showPopup(message) {
-    const popUp = document.getElementById('popUp');
-    const popUpMessage = document.getElementById('popUpMessage');
-    popUpMessage.textContent = message;
-    popUp.style.display = 'flex';
+  // Set the popup message
+  popUpMessage.textContent = message;
+  popUp.style.display = 'flex';
 
-    document.getElementById('closePopupBtn').addEventListener('click', () => {
-        popUp.style.display = 'none';
-    });
+  // Clear any existing timeout to avoid multiple fade-out calls
+  clearTimeout(window.popupTimeout);
+
+  // Set a timeout to start fading out after 5 seconds (5000 milliseconds)
+  window.popupTimeout = setTimeout(() => {
+      popUp.classList.add('fade-out');
+      // After the fade-out transition, hide the popup completely
+      setTimeout(() => {
+          popUp.style.display = 'none';
+          popUp.classList.remove('fade-out');
+      }, 1000); // Match this to the CSS transition duration
+  }, 5000); // Adjust this delay as needed
+
+  // Add a click event listener to the close button
+  closePopupBtn.addEventListener('click', () => {
+      popUp.style.display = 'none';
+      popUp.classList.remove('fade-out');
+      clearTimeout(window.popupTimeout); // Clear the timeout if user closes the popup manually
+  }, { once: true }); // Ensure the event listener is only used once
 }
+
 
 // Function to fetch and display initial stories
 async function fetchStories(storyType) {
