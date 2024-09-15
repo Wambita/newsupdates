@@ -154,10 +154,16 @@ postTypeNav.addEventListener('click', (e) => {
 loadMoreButton.addEventListener('click', loadMorePosts);
 fetchStories(currentStoryType);
 setInterval(fetchUpdates, 5000);
-window.addEventListener('scroll', () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-    if (currentPage * postsPerPage < allStories.length) {
-      loadMorePosts();
+
+let debounceTimeout;
+function onScroll() {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      if (currentPage * ITEMS_PER_PAGE < allStories.length) {
+        loadMorePosts();
+      }
     }
-  }
-});
+  }, 100);
+}
+window.addEventListener('scroll', onScroll);
