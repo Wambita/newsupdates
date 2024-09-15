@@ -5,8 +5,8 @@ const updatesContent = document.getElementById('updates-content');
 const liveUpdates = document.getElementById('live-updates');
 const postTypeNav = document.getElementById('post-type-nav');
 
+const ITEMS_PER_PAGE = 10; 
 let currentPage = 0;
-const postsPerPage = 30;
 let allStories = [];
 let currentStoryType = 'topstories';
 async function fetchStories(storyType) {
