@@ -63,8 +63,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Authors
 
-### josotieno
+[josotieno](https://learn.zone01kisumu.ke/git/josotieno)
 
-### jwambugu
+[jwambugu](https://learn.zone01kisumu.ke/git/jwambugu)
 
-### shfana
+[shfana](https://learn.zone01kisumu.ke/git/shfana)
