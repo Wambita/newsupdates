@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker News</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+      
+    <header>
+        <h1>Hacker News</h1>
+    </header>
+    <!-- Navbar -->
+    <nav id="post-type-nav">
+        <ul>
+          <li><a href="#" data-type="topstories" class="active">Top Stories</a></li>
+          <li><a href="#" data-type="newstories">Newest</a></li>
+          <li><a href="#" data-type="jobstories">Jobs</a></li>
+          <li><a href="#" data-type="pollstories">Polls</a></li>
+        </ul>
+      </nav>
+  
+    <div class="container">
+        <div id="live-updates">
+            <h3>Live Updates</h3>
+            <div id="updates-content"></div>
+        </div> 
+        <ul id="posts"></ul>
+        <button id="load-more">Load More</button> 
+    </div>
+ 
+<script defer src="cloner-news.js"></script>
+</body>
+</html>
