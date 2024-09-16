@@ -46,12 +46,49 @@ ClonerNews is a web application that replicates key features of Hacker News. It 
 
 Contains the HTML structure for the application, including the posts container, navigation, and buttons.
 
-### `script.js`
+### `cloner-news.js`
 
 - **Fetch Stories:** Retrieves stories from the Hacker News API.
 - **Load More Posts:** Manages the loading of additional posts.
 - **Load Comments:** Fetches and displays comments for each story.
 - **Live Updates:** Fetches and displays new items and updates.
+
+### `tests`
+Directory containing the test files for the program that uses the Jest framework to test its functionalities.
+
+## Testing
+Given that the program interacts heavily with DOM elements and external APIs, both DOM manipulation and asynchronous functions like API calls are tested check on its UI improvements.
+
+To test:
+
+1. Navigate into the test directory and install Jest if it already doesnt exist for user testing by:
+```bash
+npm install --save-dev jest
+```
+2. Install Jest-DOM for DOM manipulation by:
+```bash
+npm install --save-dev @testing-library/jest-dom
+```
+3. Install Jest-fetch-mock for mocking http requests by:
+```bash
+npm install --save-dev jest-fetch-mock
+```
+4. Modify the package.json to include Jest setup:
+```json
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "setupFiles": ["jest-fetch-mock"],
+    "testEnvironment": "jsdom"
+  }
+}
+```
+5. Then run all the tests using the command:
+```bash
+npm test
+```
 
 ## Contributing
 
