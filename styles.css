@@ -193,6 +193,7 @@ h1 {
   font-style: italic;
 }
 
+/* Load Comments Button */
 .load-comments {
   background-color: var(--accent-color);
   color: white;
@@ -207,6 +208,25 @@ h1 {
 }
 
 .load-comments:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Load Comments Button for Poll */
+.load-comments-btn {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  margin-top: 1rem;
+  width: 200px;
+}
+
+.load-comments-btn:hover {
   background-color: var(--primary-color);
   transform: translateY(-2px);
 }
