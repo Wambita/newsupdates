@@ -48,6 +48,10 @@ async function fetchStories(storyType) {
     } else {
       const response = await fetch(`https://hacker-news.firebaseio.com/v0/${storyType}.json`);
       const data = await response.json();
+
+      // Sort stories by timestamp (latest first)
+      data.sort((a, b) => b.time - a.time);
+
       allStories = data;
 
       if (storyType === 'newstories') {
@@ -136,7 +140,7 @@ async function fetchPollOptions(optionIds) {
 async function fetchPollComments(pollId) {
   const commentsContainer = document.getElementById('poll-comments');
   commentsContainer.innerHTML = 'Loading comments...';
-
+  
   try {
     const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${pollId}.json`);
     const poll = await response.json();
@@ -147,18 +151,20 @@ async function fetchPollComments(pollId) {
       return;
     }
 
-    commentsContainer.innerHTML = ''; // Clear initial loading message
-
-    // Load all comments (or as many as possible)
-    for (const commentId of commentIds) {
-      try {
+    commentsContainer.innerHTML = '';
+    // Fetch and sort comments
+    const comments = await Promise.all(
+      commentIds.map(async (commentId) => {
         const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
-        const comment = await commentResponse.json();
-        displayComment(comment, commentsContainer);
-      } catch (error) {
-        console.error('Error fetching comment:', error);
-      }
-    }
+        return commentResponse.json();
+      })
+    );
+
+    // Sort comments by timestamp (latest first)
+    comments.sort((a, b) => b.time - a.time);
+
+    // Display comments
+    comments.forEach(comment => displayComment(comment, commentsContainer));
   } catch (error) {
     console.error('Error loading comments:', error);
     commentsContainer.innerHTML = 'Error loading comments. Please try again.';
@@ -170,6 +176,10 @@ async function fetchAndDisplayJobs() {
   try {
     const response = await fetch('https://hacker-news.firebaseio.com/v0/jobstories.json');
     const jobStories = await response.json();
+
+    // Sort jobs by timestamp (latest first)
+    jobStories.sort((a, b) => b.time - a.time);
+
     allStories = jobStories;
     currentPage = 0;
     postsContainer.innerHTML = '';
@@ -246,33 +256,38 @@ function displayPost(post) {
 
 // Function to load comments for a post
 async function loadComments(postId) {
-  const commentsContainer = document.getElementById(`comments-${postId}`);
-  commentsContainer.innerHTML = 'Loading comments...';
-  try {
-    const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
-    const post = await response.json();
-    const commentIds = post.kids || [];
-
-    if (commentIds.length === 0) {
-      commentsContainer.innerHTML = 'No comments';
-      return;
-    }
-
-    commentsContainer.innerHTML = '';
-    for (const commentId of commentIds.slice(0, 6)) {
-      try {
-        const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
-        const comment = await commentResponse.json();
-        displayComment(comment, commentsContainer);
-      } catch (error) {
-        console.error('Error fetching comment:', error);
+    const commentsContainer = document.getElementById(`comments-${postId}`);
+    commentsContainer.innerHTML = 'Loading comments...';
+    
+    try {
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
+      const post = await response.json();
+      const commentIds = post.kids || [];
+  
+      if (commentIds.length === 0) {
+        commentsContainer.innerHTML = 'No comments';
+        return;
       }
+  
+      commentsContainer.innerHTML = '';
+      // Fetch and sort comments
+      const comments = await Promise.all(
+        commentIds.map(async (commentId) => {
+          const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
+          return commentResponse.json();
+        })
+      );
+  
+      // Sort comments by timestamp (latest first)
+      comments.sort((a, b) => b.time - a.time);
+  
+      // Display comments
+      comments.slice(0, 6).forEach(comment => displayComment(comment, commentsContainer));
+    } catch (error) {
+      console.error('Error loading comments:', error);
+      commentsContainer.innerHTML = 'Error loading comments. Please try again.';
     }
-  } catch (error) {
-    console.error('Error loading comments:', error);
-    commentsContainer.innerHTML = 'Error loading comments. Please try again.';
   }
-}
 
 // Function to display a single comment
 function displayComment(comment, container) {
