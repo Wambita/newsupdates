@@ -301,7 +301,20 @@ function displayComment(comment, container) {
 }
 
 // Function to check for new posts
+let isThrottled = false; // Throttling flag
+const THROTTLE_INTERVAL = 5000; // Throttle requests for 5 seconds
+
+// Function to check for new posts with throttling
 async function checkForNewPosts() {
+  // If already throttled, return early
+  if (isThrottled) {
+    return;
+  }
+
+  // Set the throttling flag
+  isThrottled = true;
+
+  // Continue with the rest of the function
   if (currentStoryType === 'newstories') {
     try {
       const response = await fetch('https://hacker-news.firebaseio.com/v0/newstories.json');
@@ -316,7 +329,13 @@ async function checkForNewPosts() {
       console.error('Error checking for new posts:', error);
     }
   }
+
+  // Release the throttling flag after the interval
+  setTimeout(() => {
+    isThrottled = false;
+  }, THROTTLE_INTERVAL);
 }
+
 
 // Event listeners
 liveUpdates.addEventListener('click', checkForNewPosts);
