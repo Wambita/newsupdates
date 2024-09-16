@@ -4,7 +4,7 @@ const updatesContent = document.getElementById('updates-content');
 const liveUpdates = document.getElementById('live-updates');
 const postTypeNav = document.getElementById('post-type-nav');
 
-const ITEMS_PER_PAGE = 10; 
+const ITEMS_PER_PAGE = 10;
 const UPDATE_INTERVAL = 5000; // 5 seconds
 let currentPage = 0;
 let allStories = [];
@@ -14,177 +14,304 @@ let newestStories = [];
 
 // Function to show popup
 function showPopup(message) {
-  // Set the popup message
+  const popUp = document.getElementById('popUp');
+  const popUpMessage = document.getElementById('popUpMessage');
+  const closePopupBtn = document.getElementById('closePopupBtn');
+
   popUpMessage.textContent = message;
   popUp.style.display = 'flex';
 
-  // Clear any existing timeout to avoid multiple fade-out calls
   clearTimeout(window.popupTimeout);
 
-  // Set a timeout to start fading out after 5 seconds (5000 milliseconds)
   window.popupTimeout = setTimeout(() => {
-      popUp.classList.add('fade-out');
-      // After the fade-out transition, hide the popup completely
-      setTimeout(() => {
-          popUp.style.display = 'none';
-          popUp.classList.remove('fade-out');
-      }, 1000); // Match this to the CSS transition duration
-  }, 5000); // Adjust this delay as needed
-
-  // Add a click event listener to the close button
-  closePopupBtn.addEventListener('click', () => {
+    popUp.classList.add('fade-out');
+    setTimeout(() => {
       popUp.style.display = 'none';
       popUp.classList.remove('fade-out');
-      clearTimeout(window.popupTimeout); // Clear the timeout if user closes the popup manually
-  }, { once: true }); // Ensure the event listener is only used once
-}
+    }, 1000);
+  }, 5000);
 
+  closePopupBtn.addEventListener('click', () => {
+    popUp.style.display = 'none';
+    popUp.classList.remove('fade-out');
+    clearTimeout(window.popupTimeout);
+  }, { once: true });
+}
 
 // Function to fetch and display initial stories
 async function fetchStories(storyType) {
-    try {
-        const response = await fetch(`https://hacker-news.firebaseio.com/v0/${storyType}.json`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const data = await response.json();
-        allStories = data;
-        if (storyType === 'newstories') {
-            newestStories = data;
-        }
-        currentPage = 0;
-        postsContainer.innerHTML = '';
-        loadMorePosts();
-        updateActiveNavItem(storyType);
-    } catch (error) {
-        console.error('Error fetching stories:', error);
+  try {
+    if (storyType === 'pollstories') {
+      await fetchAndDisplayPoll();
+    } else if (storyType === 'jobstories') {
+      await fetchAndDisplayJobs();
+    } else {
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/${storyType}.json`);
+      const data = await response.json();
+      allStories = data;
+
+      if (storyType === 'newstories') {
+        newestStories = data;
+      }
+
+      currentPage = 0;
+      postsContainer.innerHTML = '';
+      loadMorePosts();
+      loadMoreButton.style.display = storyType === 'pollstories' ? 'none' : 'block'; // Hide "Load More" button for polls
     }
+    updateActiveNavItem(storyType);
+  } catch (error) {
+    console.error('Error fetching stories:', error);
+  }
+}
+
+// Function to fetch and display the specific poll
+async function fetchAndDisplayPoll() {
+  try {
+    const response = await fetch('https://hacker-news.firebaseio.com/v0/item/126809.json');
+    const pollData = await response.json();
+    displayPoll(pollData);
+  } catch (error) {
+    console.error('Error fetching poll:', error);
+  }
+}
+
+// Function to display the poll
+function displayPoll(poll) {
+  postsContainer.innerHTML = ''; // Clear existing content
+  
+  // Create a container for the poll
+  const pollContainer = document.createElement('div');
+  pollContainer.className = 'post'; // Use the same class as for other posts
+
+  // Set the inner HTML with the poll details
+  pollContainer.innerHTML = `
+    <div class="poll-content">
+      <h2 class="poll-title">${poll.title}</h2>
+      <p class="post-meta">By: ${poll.by} | Posted: ${new Date(poll.time * 1000).toLocaleString()}</p>
+      <div id="poll-options" class="poll-options"></div>
+      <button id="load-comments-btn" class="load-comments">Load Comments</button>
+      <div id="poll-comments" class="poll-comments"></div>
+    </div>
+  `;
+  
+  // Append the pollContainer to the postsContainer
+  postsContainer.appendChild(pollContainer);
+
+  // Fetch and display poll options
+  fetchPollOptions(poll.parts);
+
+  // Add event listener for loading comments
+  const loadCommentsButton = document.getElementById('load-comments-btn');
+  loadCommentsButton.addEventListener('click', () => fetchPollComments(poll.id));
+}
+
+// Function to fetch poll options
+async function fetchPollOptions(optionIds) {
+  const optionsContainer = document.getElementById('poll-options');
+  optionsContainer.innerHTML = 'Loading poll options...';
+
+  try {
+    const options = await Promise.all(optionIds.map(id =>
+      fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(res => res.json())
+    ));
+
+    optionsContainer.innerHTML = '';
+    options.forEach(option => {
+      const optionElement = document.createElement('div');
+      optionElement.className = 'poll-option';
+      optionElement.innerHTML = `
+        <p>${option.text}</p>
+        <p>Votes: ${option.score}</p>
+      `;
+      optionsContainer.appendChild(optionElement);
+    });
+  } catch (error) {
+    console.error('Error fetching poll options:', error);
+    optionsContainer.innerHTML = 'Error loading poll options. Please try again.';
+  }
+}
+
+// Function to fetch poll comments
+async function fetchPollComments(pollId) {
+  const commentsContainer = document.getElementById('poll-comments');
+  commentsContainer.innerHTML = 'Loading comments...';
+
+  try {
+    const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${pollId}.json`);
+    const poll = await response.json();
+    const commentIds = poll.kids || [];
+
+    if (commentIds.length === 0) {
+      commentsContainer.innerHTML = 'No comments';
+      return;
+    }
+
+    commentsContainer.innerHTML = ''; // Clear initial loading message
+
+    // Load all comments (or as many as possible)
+    for (const commentId of commentIds) {
+      try {
+        const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
+        const comment = await commentResponse.json();
+        displayComment(comment, commentsContainer);
+      } catch (error) {
+        console.error('Error fetching comment:', error);
+      }
+    }
+  } catch (error) {
+    console.error('Error loading comments:', error);
+    commentsContainer.innerHTML = 'Error loading comments. Please try again.';
+  }
+}
+
+// Function to fetch and display jobs
+async function fetchAndDisplayJobs() {
+  try {
+    const response = await fetch('https://hacker-news.firebaseio.com/v0/jobstories.json');
+    const jobStories = await response.json();
+    allStories = jobStories;
+    currentPage = 0;
+    postsContainer.innerHTML = '';
+    loadMorePosts();
+    loadMoreButton.style.display = 'block'; // Ensure "Load More" button is visible for jobs
+  } catch (error) {
+    console.error('Error fetching job stories:', error);
+  }
 }
 
 // Function to update the active navigation item
 function updateActiveNavItem(type) {
-    const navItems = postTypeNav.querySelectorAll('a');
-    navItems.forEach(item => {
-        if (item.dataset.type === type) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
-    });
+  const navItems = postTypeNav.querySelectorAll('a');
+  navItems.forEach(item => {
+    if (item.dataset.type === type) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
 }
 
 // Function to load more posts in chunks
 async function loadMorePosts() {
-    const start = currentPage * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    const pageStories = allStories.slice(start, end);
+  if (currentStoryType === 'pollstories') return; // Do nothing if current type is pollstories
 
-    for (const storyId of pageStories) {
-        try {
-            const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`);
-            const story = await response.json();
-            displayPost(story);
-        } catch (error) {
-            console.error('Error fetching story:', error);
-        }
-    }
+  const start = currentPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  const pageStories = allStories.slice(start, end);
 
-    currentPage++;
-    
-    if (currentPage * ITEMS_PER_PAGE >= allStories.length) {
-        loadMoreButton.style.display = 'none';
-    } else {
-        loadMoreButton.style.display = 'block';
+  for (const storyId of pageStories) {
+    try {
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`);
+      const story = await response.json();
+
+      if (currentStoryType === 'topstories' && story.type === 'story' ||
+          currentStoryType === 'newstories' && story.type === 'story' ||
+          currentStoryType === 'jobstories' && story.type === 'job') {
+        displayPost(story);
+      }
+    } catch (error) {
+      console.error('Error fetching story:', error);
     }
+  }
+
+  currentPage++;
+
+  if (currentPage * ITEMS_PER_PAGE >= allStories.length) {
+    loadMoreButton.style.display = 'none';
+  } else {
+    loadMoreButton.style.display = 'block';
+  }
 }
 
 // Function to display a single post
 function displayPost(post) {
-    const listItem = document.createElement('li');
-    listItem.className = 'post';
-    listItem.innerHTML = `
-        <div>
-            <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
-            <p class="post-meta">By: ${post.by} | Score: ${post.score} points | Posted: ${new Date(post.time * 1000).toLocaleString()}</p>
-            ${post.url ? `<a href="${post.url}" target="_blank" class="read-more">Read more</a>` : ''}
-        </div>
-        <button class="load-comments" data-id="${post.id}">Load Comments</button>
-        <div class="comments-grid" id="comments-${post.id}"></div>
-    `;
-    postsContainer.appendChild(listItem);
+  const listItem = document.createElement('li');
+  listItem.className = 'post';
+  listItem.innerHTML = `
+    <div>
+      <a href="${post.url}" class="post-title" target="_blank">${post.title}</a>
+      <p class="post-meta">By: ${post.by} | Score: ${post.score} points | Posted: ${new Date(post.time * 1000).toLocaleString()}</p>
+      ${post.url ? `<a href="${post.url}" target="_blank" class="read-more">Read more</a>` : ''}
+    </div>
+    <button class="load-comments" data-id="${post.id}">Load Comments</button>
+    <div class="comments-grid" id="comments-${post.id}"></div>
+  `;
 
-    const loadCommentsButton = listItem.querySelector('.load-comments');
-    loadCommentsButton.addEventListener('click', () => loadComments(post.id));
+  postsContainer.appendChild(listItem);
+
+  const loadCommentsButton = listItem.querySelector('.load-comments');
+  loadCommentsButton.addEventListener('click', () => loadComments(post.id));
 }
 
 // Function to load comments for a post
 async function loadComments(postId) {
-    const commentsContainer = document.getElementById(`comments-${postId}`);
-    commentsContainer.innerHTML = 'Loading comments...';
-    try {
-        const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
-        const post = await response.json();
-        const commentIds = post.kids || [];
-        
-        if (commentIds.length === 0) {
-            commentsContainer.innerHTML = 'No comments';
-            return;
-        }
-        
-        commentsContainer.innerHTML = '';
-        for (const commentId of commentIds.slice(0, 6)) {
-            try {
-                const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
-                const comment = await commentResponse.json();
-                displayComment(comment, commentsContainer);
-            } catch (error) {
-                console.error('Error fetching comment:', error);
-            }
-        }
-    } catch (error) {
-        console.error('Error loading comments:', error);
-        commentsContainer.innerHTML = 'Error loading comments. Please try again.';
+  const commentsContainer = document.getElementById(`comments-${postId}`);
+  commentsContainer.innerHTML = 'Loading comments...';
+  try {
+    const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${postId}.json`);
+    const post = await response.json();
+    const commentIds = post.kids || [];
+
+    if (commentIds.length === 0) {
+      commentsContainer.innerHTML = 'No comments';
+      return;
     }
+
+    commentsContainer.innerHTML = '';
+    for (const commentId of commentIds.slice(0, 6)) {
+      try {
+        const commentResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${commentId}.json`);
+        const comment = await commentResponse.json();
+        displayComment(comment, commentsContainer);
+      } catch (error) {
+        console.error('Error fetching comment:', error);
+      }
+    }
+  } catch (error) {
+    console.error('Error loading comments:', error);
+    commentsContainer.innerHTML = 'Error loading comments. Please try again.';
+  }
 }
 
 // Function to display a single comment
 function displayComment(comment, container) {
-    const commentElement = document.createElement('div');
-    commentElement.className = 'comment';
-    commentElement.innerHTML = `
-        <div class="comment-meta">By ${comment.by} | ${new Date(comment.time * 1000).toLocaleString()}</div>
-        <div>${comment.text}</div>
-    `;
-    container.appendChild(commentElement);
+  const commentElement = document.createElement('div');
+  commentElement.className = 'comment';
+  commentElement.innerHTML = `
+    <div class="comment-meta">By ${comment.by} | ${new Date(comment.time * 1000).toLocaleString()}</div>
+    <div>${comment.text}</div>
+  `;
+  container.appendChild(commentElement);
 }
 
 // Function to check for new posts
 async function checkForNewPosts() {
-    if (currentStoryType === 'newstories') {
-        try {
-            const response = await fetch('https://hacker-news.firebaseio.com/v0/newstories.json');
-            const latestStories = await response.json();
-            const newStories = latestStories.filter(id => !newestStories.includes(id));
-            
-            if (newStories.length > 0) {
-                showPopup(`${newStories.length} new post${newStories.length > 1 ? 's' : ''} available. Click "Newest" to view ${newStories.length > 1 ? 'them' : 'it'}.`);
-                newestStories = latestStories;
-            }
-        } catch (error) {
-            console.error('Error checking for new posts:', error);
-        }
+  if (currentStoryType === 'newstories') {
+    try {
+      const response = await fetch('https://hacker-news.firebaseio.com/v0/newstories.json');
+      const latestStories = await response.json();
+      const newStories = latestStories.filter(id => !newestStories.includes(id));
+
+      if (newStories.length > 0) {
+        showPopup(`${newStories.length} new post${newStories.length > 1 ? 's' : ''} available. Click "Newest" to view ${newStories.length > 1 ? 'them' : 'it'}.`);
+        newestStories = latestStories;
+      }
+    } catch (error) {
+      console.error('Error checking for new posts:', error);
     }
+  }
 }
 
 // Event listeners
 liveUpdates.addEventListener('click', checkForNewPosts);
 postTypeNav.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (e.target.tagName === 'A') {
-        const storyType = e.target.dataset.type;
-        currentStoryType = storyType;
-        fetchStories(storyType);
-    }
+  e.preventDefault();
+  if (e.target.tagName === 'A') {
+    const storyType = e.target.dataset.type;
+    currentStoryType = storyType;
+    fetchStories(storyType);
+  }
 });
 loadMoreButton.addEventListener('click', loadMorePosts);
 
@@ -197,13 +324,13 @@ setInterval(checkForNewPosts, UPDATE_INTERVAL);
 // Debounced scroll event listener
 let debounceTimeout;
 function onScroll() {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-            if (currentPage * ITEMS_PER_PAGE < allStories.length) {
-                loadMorePosts();
-            }
-        }
-    }, 100);
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      if (currentPage * ITEMS_PER_PAGE < allStories.length) {
+        loadMorePosts();
+      }
+    }
+  }, 100);
 }
 window.addEventListener('scroll', onScroll);
