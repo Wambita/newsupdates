@@ -19,7 +19,7 @@ describe('Story Fetching', () => {
   });
 });
 // Test the showPopup function that manipulates the DOM.
-const { showPopup } = require('../clone-news.js');
+const { showPopup } = require('../cloner-news.js');
 
 describe('Popup Functionality', () => {
   beforeEach(() => {
@@ -45,5 +45,20 @@ describe('Popup Functionality', () => {
     document.getElementById('closePopupBtn').click();
     
     expect(document.getElementById('popUp').style.display).toBe('none');
+  });
+});
+// Test for event listeners on the loadMoreButton
+const { loadMorePosts } = require('../cloner-news');
+
+describe('Load More Button', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<button id="load-more"></button>';
+    loadMorePosts = jest.fn(); // Mock loadMorePosts function
+    document.getElementById('load-more').addEventListener('click', loadMorePosts);
+  });
+
+  test('clicking load more triggers loadMorePosts', () => {
+    document.getElementById('load-more').click();
+    expect(loadMorePosts).toHaveBeenCalled();
   });
 });
