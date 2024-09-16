@@ -13,29 +13,23 @@ let lastCheckTime = Date.now();
 let newestStories = [];
 
 // Function to show popup
-function showPopup(message) {
+function showPopup(message, duration = 40000) { // duration in milliseconds (40 seconds)
   const popUp = document.getElementById('popUp');
   const popUpMessage = document.getElementById('popUpMessage');
-  const closePopupBtn = document.getElementById('closePopupBtn');
-
+  
+  // Set the message and make the popup visible
   popUpMessage.textContent = message;
-  popUp.style.display = 'flex';
-
-  clearTimeout(window.popupTimeout);
-
-  window.popupTimeout = setTimeout(() => {
+  popUp.style.display = 'block';
+  
+  // Remove the fade-out class after the specified duration
+  setTimeout(() => {
     popUp.classList.add('fade-out');
+    
+    // Hide the popup after the fade-out transition ends
     setTimeout(() => {
       popUp.style.display = 'none';
-      popUp.classList.remove('fade-out');
-    }, 1000);
-  }, 5000);
-
-  closePopupBtn.addEventListener('click', () => {
-    popUp.style.display = 'none';
-    popUp.classList.remove('fade-out');
-    clearTimeout(window.popupTimeout);
-  }, { once: true });
+    }, 1000); // Match with the transition duration (1 second)
+  }, duration); // Delay before starting fade-out (40 seconds)
 }
 
 // Function to fetch and display initial stories
